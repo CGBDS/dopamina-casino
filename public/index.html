@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dopamina Casino 🎰</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="view-login" class="view">
+  <div class="login-card">
+    <div class="logo">🎰</div>
+    <h1>DOPAMINA<br>CASINO</h1>
+    <p class="tagline">Juega. Gana. Sube de nivel.<br>Compite con todos.</p>
+    <button id="btn-google" class="btn-google hidden"> <span class="g">G</span> Continuar con Google</button>
+    <div class="divider"><span>o</span></div>
+    <input id="guest-name" maxlength="16" placeholder="Tu nombre de jugador">
+    <button id="btn-guest" class="btn-primary">Jugar como invitado</button>
+    <p class="legal">🔞 Solo mayores de 18. Fichas 100% virtuales: sin valor monetario y sin canje por dinero.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="view-app" class="view hidden">
+  <header>
+    <div class="user-chip"><span id="u-avatar">🙂</span><div><b id="u-name">—</b><div class="lvl"><div id="lvl-fill"></div><span id="u-level">Nv 1</span></div></div></div>
+    <div class="coins-chip">🪙 <b id="u-coins">0</b><span id="streak-chip" class="hidden">🔥<b id="u-streak">0</b></span></div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="juegos" class="active">🎮 Juegos</button>
+    <button data-tab="misiones">🎯 Misiones</button>
+    <button data-tab="ranking">🏆 Tops</button>
+    <button data-tab="tienda">💰 Tienda</button>
+  </nav>
+
+  <!-- JUEGOS -->
+  <section id="tab-juegos" class="tab">
+    <div id="claim-banner" class="banner hidden">🎁 ¡Tu bono diario está listo! <button id="btn-claim">Reclamar</button></div>
+    <div class="duo">
+      <button id="btn-wheel" class="card-mini">🎡<b>Ruleta gratis</b><small id="wheel-sub">¡Gira ya!</small></button>
+      <div class="card-mini">🏆<b>Torneo diario</b><small id="tourn-sub">Termina en --:--</small></div>
+    </div>
+    <div id="feed" class="feed"><div class="feed-title">⚡ En vivo</div><div id="feed-items"></div></div>
+    <div class="games-grid">
+      <button class="game-card" data-game="slots">🎰<b>Tragamonedas</b><small>Hasta x50</small></button>
+      <button class="game-card" data-game="blackjack">🃏<b>Blackjack</b><small>x2.5 con BJ</small></button>
+      <button class="game-card" data-game="roulette">🎡<b>Ruleta</b><small>Hasta x36</small></button>
+      <button class="game-card" data-game="coinflip">🪙<b>Cara o cruz</b><small>x2</small></button>
+      <button class="game-card" data-game="hilo">🔼<b>Mayor o menor</b><small>x1.3</small></button>
+      <button class="game-card" data-game="dice">🎲<b>Dados</b><small>Tú vs la casa</small></button>
+    </div>
+  </section>
+
+  <!-- MISIONES -->
+  <section id="tab-misiones" class="tab hidden">
+    <div class="card"><h3>🔥 Racha diaria: <b id="m-streak">0</b> días</h3><p class="muted">Reclama tu bono cada día para aumentar la racha y ganar más.</p></div>
+    <h3>🎯 Misiones de hoy</h3>
+    <div id="missions-list"></div>
+  </section>
+
+  <!-- RANKING -->
+  <section id="tab-ranking" class="tab hidden">
+    <h3>🏆 Torneo de hoy <small class="muted">(más ganancia del día)</small></h3>
+    <div id="rank-tourn"></div>
+    <h3>💰 Más fichas</h3><div id="rank-coins"></div>
+    <h3>⚡ Ganancia más grande</h3><div id="rank-wins"></div>
+  </section>
+
+  <!-- TIENDA -->
+  <section id="tab-tienda" class="tab hidden">
+    <div id="shop-note" class="card"></div>
+    <div id="packs"></div>
+    <p class="legal">Fichas virtuales sin valor monetario. No se pueden canjear por dinero real ni premios. 🔞 18+.</p>
+  </section>
+
+  <!-- SALA DE JUEGO -->
+  <section id="tab-game" class="tab hidden">
+    <button id="btn-back" class="btn-ghost">← Volver</button>
+    <h2 id="game-title">Juego</h2>
+    <div class="bet-row">
+      <label>Apuesta:</label>
+      <div class="bets">
+        <button data-bet="10">10</button><button data-bet="50">50</button><button data-bet="100" class="sel">100</button><button data-bet="500">500</button><button data-bet="1000">1K</button>
+      </div>
+    </div>
+    <div id="streak-line" class="streak-line hidden">🔥 Racha x<b id="win-streak">0</b> <small>(+<span id="streak-bonus">0</span>% extra)</small></div>
+
+    <div id="game-slots" class="game-pane hidden">
+      <div class="slots"><span id="r0">🎰</span><span id="r1">🎰</span><span id="r2">🎰</span></div>
+      <button id="btn-spin" class="btn-primary big">GIRAR</button>
+      <p id="slots-msg" class="msg"></p>
+    </div>
+
+    <div id="game-blackjack" class="game-pane hidden">
+      <div class="cards-label">Dealer <span id="bj-dval"></span></div><div id="bj-dealer" class="cards"></div>
+      <div class="cards-label">Tú <span id="bj-pval"></span></div><div id="bj-player" class="cards"></div>
+      <div class="row"><button id="bj-deal" class="btn-primary">Repartir</button>
+      <button id="bj-hit" class="btn-primary hidden">Pedir</button>
+      <button id="bj-stand" class="btn-ghost hidden">Plantarse</button></div>
+      <p id="bj-msg" class="msg"></p>
+    </div>
+
+    <div id="game-roulette" class="game-pane hidden">
+      <div id="roul-num" class="roul-num">?</div>
+      <div class="roul-bets">
+        <button data-rt="red" class="red">Rojo x2</button><button data-rt="black" class="black">Negro x2</button>
+        <button data-rt="even">Par x2</button><button data-rt="odd">Impar x2</button>
+        <button data-rt="low">1-18 x2</button><button data-rt="high">19-36 x2</button>
+      </div>
+      <div class="row"><input id="roul-number" type="number" min="0" max="36" placeholder="0-36"><button id="roul-num-btn" class="btn-ghost">Número x36</button></div>
+      <button id="btn-roul" class="btn-primary big">GIRAR RULETA</button>
+      <p id="roul-msg" class="msg"></p>
+    </div>
+
+    <div id="game-coinflip" class="game-pane hidden">
+      <div id="coin" class="coin">🪙</div>
+      <div class="row"><button id="cf-cara" class="btn-primary">Cara</button><button id="cf-cruz" class="btn-primary">Cruz</button></div>
+      <p id="cf-msg" class="msg"></p>
+    </div>
+
+    <div id="game-hilo" class="game-pane hidden">
+      <div id="hilo-card" class="hilo-card">?</div>
+      <div class="row"><button id="hilo-new" class="btn-ghost">Nueva carta</button></div>
+      <div class="row"><button id="hilo-hi" class="btn-primary">🔼 Mayor</button><button id="hilo-lo" class="btn-primary">🔽 Menor</button></div>
+      <p id="hilo-msg" class="msg"></p>
+    </div>
+
+    <div id="game-dice" class="game-pane hidden">
+      <div class="dice-row"><div><small>Tú</small><div id="dice-p" class="dice">🎲🎲</div></div><div class="vs">VS</div><div><small>Casa</small><div id="dice-h" class="dice">🎲🎲</div></div></div>
+      <button id="btn-dice" class="btn-primary big">TIRAR DADOS</button>
+      <p id="dice-msg" class="msg"></p>
+    </div>
+  </section>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal hidden"><div class="modal-card"><div id="modal-emoji" class="logo">🎉</div><h2 id="modal-title"></h2><p id="modal-text"></p><button id="modal-ok" class="btn-primary">¡Vamos!</button></div></div>
+
+<script src="app.js"></script>
+</body>
+</html>
