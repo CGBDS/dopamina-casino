@@ -7,6 +7,8 @@ services:
     startCommand: node server/index.js
     healthCheckPath: /api/health
     envVars:
+      - key: NODE_VERSION
+        value: 24
       - key: SESSION_SECRET
         generateValue: true
       - key: GOOGLE_CLIENT_ID
